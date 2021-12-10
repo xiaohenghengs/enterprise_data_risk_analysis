@@ -1,5 +1,5 @@
 from conf import task_name
-from libraries.sqlite_operate import SqliteOperate
+from utils.sqlite_operate import SqliteOperate
 
 db = SqliteOperate(task_name)
 
@@ -9,7 +9,7 @@ if __name__ == '__main__':
             create table rules
             (
                 id                          integer primary key autoincrement not null unique,
-                drop_columns_id             integer                           not null,
+                batch                       integer                           not null,
                 rule                        varchar(512)                      null,
                 conclusion                  varchar(64)                       null,
                 number_of_items_occurrences int                               null,

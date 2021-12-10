@@ -1,5 +1,5 @@
 from conf import other_table_name
-from libraries.sqlite_operate import SqliteOperate
+from utils.sqlite_operate import SqliteOperate
 
 db = SqliteOperate()
 

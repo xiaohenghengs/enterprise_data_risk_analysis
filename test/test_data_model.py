@@ -1,6 +1,6 @@
 import unittest
 
-from core.attribute_analysis.core.attribute import Attribute
+from edra.attribute_analysis.core.attribute import Attribute
 
 
 class DataModelTest(unittest.TestCase):
@@ -17,7 +17,7 @@ class DataModelTest(unittest.TestCase):
         return self.__data_model.getMostCountColumnWithColumns()
 
     def test_saveDropColumn(self):
-        __most_count, __data_length = self.test_getMostCountColumnWithColumns()
+        __most_count, __column_length = self.test_getMostCountColumnWithColumns()
         self.__data_model.saveDropColumn(__most_count)
 
 

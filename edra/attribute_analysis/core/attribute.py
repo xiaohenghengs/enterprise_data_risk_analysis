@@ -1,7 +1,7 @@
 from pandas import *
 
 from conf import target_table_name
-from libraries.sqlite_operate import SqliteOperate
+from utils.sqlite_operate import SqliteOperate
 
 
 class Attribute:
@@ -32,7 +32,7 @@ class Attribute:
             attributes.append([{'column': column, 'attr': x, 'count': dict_group[x]} for x in dict_group.keys() if
                                dict_group[x] == max_count][0])
         attributes = sorted(attributes, key=lambda x: x['count'], reverse=True)
-        return attributes[0], len(all_data)
+        return attributes[0], len(self.__columns)
 
     def saveDropColumn(self, attribute):
         sql = '''INSERT INTO drop_columns (batch, _column, attribute, count) 

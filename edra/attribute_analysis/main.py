@@ -1,9 +1,15 @@
+import sys
+
+sys.path.append(r'../../../enterprise_data_risk_analysis')
 import numpy
 
-from core.attribute_analysis import createOtherData
-from core.attribute_analysis.core.attribute import Attribute
 from conf import target_table_name, other_table_name
-from libraries.sqlite_operate import SqliteOperate
+from edra.attribute_analysis import createOtherData
+from edra.attribute_analysis.core.attribute import Attribute
+from utils.sqlite_operate import SqliteOperate
+from utils.logging_operate import LoggingOperate
+
+logger = LoggingOperate('attribute_analysis')
 
 db = SqliteOperate()
 
@@ -28,18 +34,18 @@ def dataMove(data):
 
 if __name__ == '__main__':
     data_length = int(input('单个目标表的数据长度：'))
-    min_data_length = int(input('单个目标表的数据最小长度：'))
-    max_other_length = int(input('非一般项集数据最大长度：'))
+    columns_length = int(input('单个目标表的剩余字段个数：'))
     batch = 1
     while True:
-        print('>>>>>>Attribute Analysis Start!')
+        logger.info('>>>>>>Attribute Analysis Start!')
         data_model = Attribute(batch)
         data_model.removeColumn('id')
         while True:
-            __most_count, __data_length = data_model.getMostCountColumnWithColumns()
-            if __data_length < data_length:
+            __most_count, __columns_length = data_model.getMostCountColumnWithColumns()
+            # set double cut-off condition
+            if (__columns_length < columns_length) or (__most_count['count'] < data_length):
                 break
-            print('>>>batch:%s, column info:%s' % (str(batch), str(__most_count),))
+            logger.info('>>>batch:%s, column info:%s' % (str(batch), str(__most_count),))
             data_model.saveDropColumn(__most_count)
             most_column = __most_count['column']
             # query data with most count column
@@ -49,15 +55,14 @@ if __name__ == '__main__':
             if len(other_data) > 0:
                 dataMove(other_data)
             data_model.removeColumn(most_column)
-        print('>>>batch:%s is done, start next batch' % batch)
+        logger.info('>>>batch:%s is done, start next batch' % batch)
         # rename target table with drop column table id
         db.rename_table('target_data', 'target_data_' + str(batch))
-        if __data_length < min_data_length:
-            break
         other_length = db.query_one('SELECT count(*) FROM other_data')
-        if other_length[0] < max_other_length:
+        # set cut-off condition
+        if other_length[0] < data_length:
             break
         db.rename_table('other_data', 'target_data')
         createOtherData()
         batch += 1
-    print('>>>>>>Attribute Analysis Done!')
+    logger.info('>>>>>>Attribute Analysis Done!')
