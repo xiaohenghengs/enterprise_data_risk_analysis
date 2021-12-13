@@ -3,7 +3,7 @@ import unittest
 from edra.attribute_analysis.core.attribute import Attribute
 
 
-class DataModelTest(unittest.TestCase):
+class AttributeTest(unittest.TestCase):
     def setUp(self) -> None:
         self.__data_model = Attribute(1)
 

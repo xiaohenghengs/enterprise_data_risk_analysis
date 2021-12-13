@@ -1,3 +1,12 @@
-task_name: enterprise_analysis
-target_table_name: target_data
-other_table_name: other_data
+dev:
+  task_name: enterprise_analysis
+  target_table_name: target_data
+  other_table_name: other_data
+  logger:
+    file_path: 'D:\projects\enterprise_data_risk_analysis\'
+prod:
+  task_name: enterprise_analysis
+  target_table_name: target_data
+  other_table_name: other_data
+  logger:
+    file_path: '/home/enterprise_data_risk_analysis/'
