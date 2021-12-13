@@ -9,7 +9,7 @@ from utils.logging_operate import LoggingOperate
 from utils.sqlite_operate import SqliteOperate
 
 sqlite = SqliteOperate()
-logger = LoggingOperate('rules_analysis')
+logger = LoggingOperate('rules_analysis_rules_main')
 data_rules = list()
 
 

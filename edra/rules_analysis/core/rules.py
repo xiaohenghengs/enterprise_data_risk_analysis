@@ -27,7 +27,7 @@ class RulesHandler:
 
     def matchHighest(self, data):
         rule_match_info = list()
-        for rule_id in self.rules.keys():
+        for rule_id in self.rules:
             rule = self.rules[rule_id]
             match_attribute = [x for x in rule if x.strip() in data]
             score = len(match_attribute) / len(rule)

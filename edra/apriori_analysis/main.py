@@ -28,7 +28,7 @@ def analysisTargetData():
         target_table_name = target_data + '_' + str(bat)
         wait_analysis_columns = getAnalysisColumns(bat, target_table_name)
         sql = 'SELECT %s FROM %s' % (','.join(wait_analysis_columns), target_table_name)
-        wait_analysis_data = [[i + ':' + str(x[i]) for i in x.keys()] for x in db_with_column.query_all(sql)]
+        wait_analysis_data = [[i + ':' + str(x[i]) for i in x] for x in db_with_column.query_all(sql)]
         doAssociation(wait_analysis_data, bat)
 
 

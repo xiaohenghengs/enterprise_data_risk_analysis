@@ -29,7 +29,7 @@ class Attribute:
             grouped = df.groupby(column).size()
             dict_group = dict(grouped)
             max_count = grouped.max()
-            attributes.append([{'column': column, 'attr': x, 'count': dict_group[x]} for x in dict_group.keys() if
+            attributes.append([{'column': column, 'attr': x, 'count': dict_group[x]} for x in dict_group if
                                dict_group[x] == max_count][0])
         attributes = sorted(attributes, key=lambda x: x['count'], reverse=True)
         return attributes[0], len(self.__columns)
