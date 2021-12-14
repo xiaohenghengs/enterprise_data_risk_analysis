@@ -48,7 +48,4 @@ class HsCodeHandler:
             abnormal_attr.extend([x for x in rules if x not in target_data])
         abnormal_attr = [x.split(':')[0] for x in abnormal_attr]
         abnormal_attr_counter = Counter(abnormal_attr)
-        counter_dict = dict()
-        for counter in abnormal_attr_counter:
-            counter_dict[counter] = round(abnormal_attr_counter[counter] / len(abnormal_attr), 2)
-        return s1, s2, counter_dict
+        return s1, s2, abnormal_attr_counter

@@ -35,8 +35,8 @@ class RuleHandlerTest(unittest.TestCase):
         return hs_codes
 
     def test_handleSingleHsData(self):
-        hs_codes = self.test_getTargetDataRules()
-        data_ids = self.sqlite.query_all("SELECT id FROM raw_data WHERE CKSP_DM = '%s'" % hs_codes[0])
+        hs_codes = (7228309000,)
+        data_ids = self.sqlite.query_all("SELECT id FROM raw_data WHERE CKSP_DM = '%s'" % hs_codes)
         self.hsHandler.handleSingleHsData([str(x[0]) for x in data_ids])
 
 
