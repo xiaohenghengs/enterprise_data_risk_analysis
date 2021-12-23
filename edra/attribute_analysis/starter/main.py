@@ -1,6 +1,6 @@
 import sys
 
-sys.path.append(r'../../../enterprise_data_risk_analysis')
+sys.path.append(r'../../..')
 import numpy
 
 from conf import target_table_name, other_table_name

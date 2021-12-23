@@ -1,12 +1,13 @@
-dev:
-  task_name: enterprise_analysis
-  target_table_name: target_data
-  other_table_name: other_data
-  logger:
-    file_path: 'D:\projects\enterprise_data_risk_analysis\'
-prod:
-  task_name: enterprise_analysis
-  target_table_name: target_data
-  other_table_name: other_data
-  logger:
-    file_path: '/home/enterprise_data_risk_analysis/'
+task_name: enterprise_analysis
+target_table_name: target_data
+other_table_name: other_data
+database:
+  table:
+    basic: customs_declaration
+    target: customs_declaration_target
+  oceanbase:
+    driver: com.alipay.oceanbase.jdbc.Driver
+    url: jdbc:oceanbase://192.168.100.30:2881/edra?rewriteBatchedStateme&useUnicode=true&characterEncoding=utf-8&autoReconnect=true
+    user: xiaohengheng@edra
+    password: 123456
+    jar: utils/libs/oceanbase-client-1.1.10.jar

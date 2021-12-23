@@ -1,10 +1,10 @@
 import sys
 
-sys.path.append(r'../../../enterprise_data_risk_analysis')
+sys.path.append(r'../../../../enterprise_data_risk_analysis')
 from threading import Thread
 import threading
 from conf import target_table_name, other_table_name
-from core.rules import RulesHandler
+from edra.rules_analysis.core.rules import RulesHandler
 from utils.logging_operate import LoggingOperate
 from utils.sqlite_operate import SqliteOperate
 

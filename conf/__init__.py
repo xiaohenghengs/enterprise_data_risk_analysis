@@ -2,16 +2,15 @@ import os
 
 import yaml
 
-__dev = True
-
-parent_path = os.path.dirname(os.path.realpath(__file__))  # 父文件夹的绝对路径
-with open(os.path.join(parent_path, 'config.yaml'), 'r') as f:
+item_name = 'enterprise_data_risk_analysis\\'
+cur_path = os.path.abspath(os.path.dirname(__file__))
+root_path = cur_path[:cur_path.find(item_name) + len(item_name)]
+with open(os.path.join(cur_path, 'config.yaml'), 'r') as f:
     config = yaml.safe_load(f)
-    if __dev:
-        config = config['dev']
-    else:
-        config = config['prod']
     task_name = config['task_name']
     target_table_name = config['target_table_name']
     other_table_name = config['other_table_name']
-    log_file_path = config['logger']['file_path']
+    # database info config
+    database = config['database']
+    table = database['table']
+    oceanbase = database['oceanbase']

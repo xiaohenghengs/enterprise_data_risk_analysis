@@ -1,5 +1,6 @@
 import pandas as pd
-from core.hscode import HsCodeHandler
+
+from edra.rules_analysis.core.hscode import HsCodeHandler
 from utils.logging_operate import LoggingOperate
 from utils.sqlite_operate import SqliteOperate
 
