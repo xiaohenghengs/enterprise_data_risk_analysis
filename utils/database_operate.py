@@ -1,3 +1,4 @@
+import os
 import jaydebeapi
 
 from conf import oceanbase, root_path
@@ -11,7 +12,7 @@ class DataBaseOperate:
         url = base_info['url']
         user = base_info['user']
         password = base_info['password']
-        jar = root_path + base_info['jar']
+        jar = os.path.join(root_path, base_info['jar'])
         self.connect = jaydebeapi.connect(jclassname=driver, url=url, driver_args=[str(user), str(password)], jars=jar)
         self.cursor = self.connect.cursor()
 

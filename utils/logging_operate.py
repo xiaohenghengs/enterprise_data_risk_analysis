@@ -1,3 +1,4 @@
+import os
 import logging
 from conf import root_path
 
@@ -9,7 +10,7 @@ class LoggingOperate:
         self.logger = logging.getLogger(class_name)
         self.logger.setLevel(logging.DEBUG)
         # create file handler which logs even debug messages
-        fh = logging.FileHandler(root_path + 'log/' + class_name + '_info.log')
+        fh = logging.FileHandler(os.path.join(root_path, 'log', class_name + '_info.log'))
         fh.setLevel(logging.DEBUG)
         # create console handler with a higher log level
         ch = logging.StreamHandler()
