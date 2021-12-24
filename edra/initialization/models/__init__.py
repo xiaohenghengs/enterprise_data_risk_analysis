@@ -7,6 +7,7 @@ def sqlCreateTableCustomsDeclaration():
         (
             ID           bigint not null auto_increment primary key,
             HGQY_DM      varchar(64),
+            CKSP_DM      varchar(64),
             CKY          varchar(64),
             ZMY          varchar(64),
             CKSL_DECILE  varchar(64),

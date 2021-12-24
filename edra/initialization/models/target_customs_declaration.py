@@ -7,9 +7,11 @@ class CustomsDeclarationTarget:
     报关单明细目标数据实体
     """
 
-    def __init__(self, hgqy_dm=None, cksl_decile=None, mylaj_decile=None, fobdj_decile=None, mz_2_decile=None,
-                 jz_decile=None, cky=None, zzmdgdqsz_dm=None, ysfs_dm=None, zyg_dm=None, hgcjfs_dm=None, jhfs_dm=None,
-                 yfjsfs_dm=None, bfjsfs_dm=None, zfjsfs_dm=None, qygbz=None, hzdwdq_dm=None, hggqka_dm=None, zmy=None):
+    def __init__(self, cksp_dm=None, hgqy_dm=None, cksl_decile=None, mylaj_decile=None, fobdj_decile=None,
+                 mz_2_decile=None, jz_decile=None, cky=None, zzmdgdqsz_dm=None, ysfs_dm=None, zyg_dm=None,
+                 hgcjfs_dm=None, jhfs_dm=None, yfjsfs_dm=None, bfjsfs_dm=None, zfjsfs_dm=None, qygbz=None,
+                 hzdwdq_dm=None, hggqka_dm=None, zmy=None):
+        self.__cksp_dm = cksp_dm
         self.__hgqy_dm = hgqy_dm
         self.__cky = cky
         self.__zmy = zmy
@@ -30,6 +32,14 @@ class CustomsDeclarationTarget:
         self.__hzdwdq_dm = hzdwdq_dm
         self.__hggqka_dm = hggqka_dm
         self.__list = list()
+
+    @property
+    def cksp_dm(self):
+        return self.__cksp_dm
+
+    @cksp_dm.setter
+    def cksp_dm(self, cksp_dm):
+        self.__cksp_dm = cksp_dm
 
     @property
     def hgqy_dm(self):
@@ -192,17 +202,17 @@ class CustomsDeclarationTarget:
         self.__list.append(record)
 
     def toList(self):
-        return [self.__hgqy_dm, self.__cky, self.__zmy, self.__cksl_decile, self.__mylaj_decile, self.__fobdj_decile,
-                self.__mz_2_decile, self.__jz_decile, self.__zzmdgdqsz_dm, self.__ysfs_dm, self.__zyg_dm,
-                self.__hgcjfs_dm, self.__jhfs_dm, self.__yfjsfs_dm, self.__bfjsfs_dm, self.__zfjsfs_dm, self.__qygbz,
-                self.__hzdwdq_dm, self.__hggqka_dm]
+        return [self.__cksp_dm, self.__hgqy_dm, self.__cky, self.__zmy, self.__cksl_decile, self.__mylaj_decile,
+                self.__fobdj_decile, self.__mz_2_decile, self.__jz_decile, self.__zzmdgdqsz_dm, self.__ysfs_dm,
+                self.__zyg_dm, self.__hgcjfs_dm, self.__jhfs_dm, self.__yfjsfs_dm, self.__bfjsfs_dm, self.__zfjsfs_dm,
+                self.__qygbz, self.__hzdwdq_dm, self.__hggqka_dm]
 
     def save(self):
         with DataBaseOperate() as db:
             db.executemany_sql(
                 """
-                    INSERT INTO customs_declaration_target (hgqy_dm, cky, zmy, cksl_decile, mylaj_decile, fobdj_decile,
+                    INSERT INTO customs_declaration_target (cksp_dm, hgqy_dm, cky, zmy, cksl_decile, mylaj_decile, fobdj_decile,
                                     mz_2_decile,jz_decile, zzmdgdqsz_dm, ysfs_dm, zyg_dm, hgcjfs_dm, jhfs_dm, yfjsfs_dm,
                                     bfjsfs_dm, zfjsfs_dm, qygbz, hzdwdq_dm, hggqka_dm)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, self.__list)
