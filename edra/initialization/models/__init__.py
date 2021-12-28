@@ -3,9 +3,9 @@ from conf import table
 
 def sqlCreateTableCustomsDeclaration():
     return """
-    create table if not exists %s
+    CREATE TABLE IF NOT EXISTS %s
         (
-            ID           bigint not null auto_increment primary key,
+            ID           BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             HGQY_DM      varchar(64),
             CKSP_DM      varchar(64),
             CKY          varchar(64),
