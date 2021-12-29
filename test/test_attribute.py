@@ -1,32 +1,38 @@
 import unittest
 
-from edra.attribute_analysis.core.aggregation import Aggregation
 from edra.attribute_analysis.core.attribute import Attribute
 
 
 class AttributeTest(unittest.TestCase):
     def setUp(self) -> None:
-        self.__max_num = 20000
-        self.__min_num = 10000
-        self.__ids = Aggregation(self.__max_num, self.__min_num).getAttributeIds(4907009011, 22697)
+        self.__length = 10
+        self.__unit = 10000
+        self.__cksp_dm = 4907009011
+        self.__zmy = 22697
 
     def tearDown(self) -> None:
         pass
 
     def test_attributesFilter(self):
-        with Attribute(self.__ids, self.__max_num, self.__min_num, ['ID', 'HGQY_DM']) as attribute:
-            ids = attribute.attributesFilter()
-            self.assertLessEqual(len(ids), self.__max_num)
-            self.assertGreaterEqual(len(ids), self.__min_num)
+        with Attribute(
+                {'max_num': 20000, 'min_num': 10000, 'length': self.__length, 'unit': self.__unit},
+                ['ID', 'HGQY_DM']) as attribute:
+            ids = attribute.attributesFilter(self.__cksp_dm, self.__zmy)
+            self.assertLessEqual(len(ids), 20000)
+            self.assertGreaterEqual(len(ids), 10000)
 
     def test_resultLessThanMin(self):
-        with Attribute(self.__ids, 20000, 14395, ['ID', 'HGQY_DM']) as attribute:
-            ids = attribute.attributesFilter()
-            self.assertGreaterEqual(len(ids), self.__max_num)
+        with Attribute(
+                {'max_num': 20000, 'min_num': 14395, 'length': self.__length, 'unit': self.__unit},
+                ['ID', 'HGQY_DM']) as attribute:
+            ids = attribute.attributesFilter(self.__cksp_dm, self.__zmy)
+            self.assertGreaterEqual(len(ids), 20000)
 
     def test_outOfColumns(self):
-        with Attribute(self.__ids, 100, 0, ['ID', 'HGQY_DM']) as attribute:
-            ids = attribute.attributesFilter()
+        with Attribute(
+                {'max_num': 100, 'min_num': 0, 'length': self.__length, 'unit': self.__unit},
+                ['ID', 'HGQY_DM']) as attribute:
+            ids = attribute.attributesFilter(self.__cksp_dm, self.__zmy)
             self.assertLessEqual(len(ids), 200)
 
 

@@ -11,6 +11,7 @@ from edra.initialization.models.target_customs_declaration import CustomsDeclara
 from utils.database_operate import DataBaseOperate
 from utils.logging_operate import LoggingOperate
 from utils.quantile import Quantile
+from utils.utils import listOfGroups
 
 columns = ['HGQY_DM', 'CKSL', 'MYLAJ', 'MYLAJ / CKSL AS FOBDJ', 'MZ_2', 'JZ', 'CKNY', 'ZZMDGDQSZ_DM', 'YSFS_DM',
            'ZYG_DM', 'HGCJFS_DM', 'JHFS_DM', 'YFJSFS_DM', 'BFJSFS_DM', 'ZFJSFS_DM', 'QYGBZ', 'HZDWDQ_DM', 'HGGQKA_DM',
@@ -106,14 +107,6 @@ def threadInitTarget(customs_enterprise_codes):
                 customs.addList(customs.toList())
             customs.save()
             logger.info('》》》thread：%s ，目标明细数据保存成功！' % thread_name)
-
-
-def listOfGroups(init_list, children_list_len):
-    list_of_groups = zip(*(iter(init_list),) * children_list_len)
-    end_list = [list(i) for i in list_of_groups]
-    count = len(init_list) % children_list_len
-    end_list.append(init_list[-count:]) if count != 0 else end_list
-    return end_list
 
 
 if __name__ == '__main__':
