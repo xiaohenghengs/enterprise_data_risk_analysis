@@ -74,11 +74,11 @@ class Aggregation:
             from (
                      select t.CKSP_DM, t.ZMY, count(*) as COUNT
                      from (
-                              select ID,
+                              select c.ID,
                                      left(c.CKSP_DM, %s)        as CKSP_DM,
                                      TRUNCATE(c.ZMY / %s, 0) as ZMY
                               from %s c
-                              where not exists (select 1 from attribute_items_details a where a.DATA_ID = C.ID)
+                              where not exists (select 1 from attribute_items_details a where a.DATA_ID = c.ID)
                           ) t
                      group by t.CKSP_DM, t.ZMY
                  ) tt
@@ -90,9 +90,10 @@ class Aggregation:
     def getAttributeItems(self, columns, cksp_dm, zmy, length=None, unit=None, conditions=None):
         with DataBaseOperate() as db:
             sql = """select %s
-                     from %s
-                     where left(CKSP_DM, %s) = '%s'
-                     and TRUNCATE(ZMY / %s, 0) = %s
+                     from %s c
+                     where left(c.CKSP_DM, %s) = '%s'
+                     and TRUNCATE(c.ZMY / %s, 0) = %s
+                     and not exists (select 1 from attribute_items_details a where a.DATA_ID = c.ID)
                 """ % (','.join(columns), table['target'], length if length else self.__cksp_dm_length, cksp_dm,
                        unit if unit else self.__zmy_unit, zmy)
             if conditions:
