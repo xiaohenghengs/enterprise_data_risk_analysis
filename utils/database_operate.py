@@ -46,6 +46,17 @@ class DataBaseOperate:
         self.execute_sql(sql)
         return self.cursor.fetchall()
 
+    def query_all_with_column(self, sql):
+        data = self.query_all(sql)
+        index_dict = self.get_index_dict()
+        res = []
+        for d in data:
+            res_i = dict()
+            for index_i in index_dict:
+                res_i[index_i] = d[index_dict[index_i]]
+            res.append(res_i)
+        return res
+
     def executemany_sql(self, sql, data_list):
         """
         EXAMPLE

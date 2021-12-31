@@ -75,8 +75,8 @@ class Aggregation:
                      select t.CKSP_DM, t.ZMY, count(*) as COUNT
                      from (
                               select c.ID,
-                                     left(c.CKSP_DM, %s)        as CKSP_DM,
-                                     TRUNCATE(c.ZMY / %s, 0) as ZMY
+                                     LEFT(c.CKSP_DM, %s)        as CKSP_DM,
+                                     TRUNCATE(c.ZMY / %s, 0)    as ZMY
                               from %s c
                               where not exists (select 1 from attribute_items_details a where a.DATA_ID = c.ID)
                           ) t
@@ -91,7 +91,7 @@ class Aggregation:
         with DataBaseOperate() as db:
             sql = """select %s
                      from %s c
-                     where left(c.CKSP_DM, %s) = '%s'
+                     where LEFT(c.CKSP_DM, %s) = '%s'
                      and TRUNCATE(c.ZMY / %s, 0) = %s
                      and not exists (select 1 from attribute_items_details a where a.DATA_ID = c.ID)
                 """ % (','.join(columns), table['target'], length if length else self.__cksp_dm_length, cksp_dm,
