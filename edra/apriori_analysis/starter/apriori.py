@@ -16,8 +16,7 @@ logger = LoggingOperate("apriori")
 
 RULES_HS_CODE = ['CKSL_DECILE', 'MYLAJ_DECILE', 'FOBDJ_DECILE', 'MZ_2_DECILE', 'JZ_DECILE', 'CKY']
 
-RULES_ENTERPRISE_SCALE = ['ZZMDGDQSZ_DM', 'YSFS_DM', 'ZYG_DM', 'HGCJFS_DM', 'JHFS_DM', 'YFJSFS_DM', 'BFJSFS_DM',
-                          'ZFJSFS_DM', 'QYGBZ', 'HZDWDQ_DM', 'HGGQKA_DM']
+RULES_ENTERPRISE_SCALE = ['ZZMDGDQSZ_DM', 'YSFS_DM', 'ZYG_DM', 'HGCJFS_DM', 'QYGBZ', 'HZDWDQ_DM', 'HGGQKA_DM']
 
 table_name_hs_code = 'rules_hs_code'
 table_name_enterprise_scale = 'rules_enterprise_scale'
@@ -81,7 +80,7 @@ def sqlQueryData(columns, item_id, length, unit):
 
 
 def doAssociation(wait_analysis_data):
-    association = Association(wait_analysis_data, float(5000 / len(wait_analysis_data)), 0.8)
+    association = Association(wait_analysis_data, float(2000 / len(wait_analysis_data)), 0.8)
     rules = association.generateResult()
     pool = ThreadPool()
     pool.map(partial(association.filteringAndDecodingResult, rule_len=1, target_len=100), rules)
