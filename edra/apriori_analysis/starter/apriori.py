@@ -11,6 +11,7 @@ from edra.apriori_analysis.models.rule import Rule
 from utils.database_operate import DataBaseOperate
 from utils.logging_operate import LoggingOperate
 from utils.utils import listOfGroups
+import tensorflow as tf
 
 logger = LoggingOperate("apriori")
 
@@ -18,8 +19,8 @@ RULES_HS_CODE = ['CKSL_DECILE', 'MYLAJ_DECILE', 'FOBDJ_DECILE', 'MZ_2_DECILE', '
 
 RULES_ENTERPRISE_SCALE = ['ZZMDGDQSZ_DM', 'YSFS_DM', 'ZYG_DM', 'HGCJFS_DM', 'QYGBZ', 'HZDWDQ_DM', 'HGGQKA_DM']
 
-table_name_hs_code = 'rules_hs_code'
-table_name_enterprise_scale = 'rules_enterprise_scale'
+table_name_hs_code = 'rules_hs_code_left'
+table_name_enterprise_scale = 'rules_enterprise_scale_left'
 
 
 def createRulesTable():
@@ -79,6 +80,33 @@ def sqlQueryData(columns, item_id, length, unit):
         """ % (key_condition + ','.join(columns), table['target'], item_id)
 
 
+def handleDataLeft():
+    """
+    处理剩下的数据
+    :return:
+    """
+    hs_code = queryDataLeft(RULES_HS_CODE)
+    enterprise_scale = queryDataLeft(RULES_ENTERPRISE_SCALE)
+    wait_analysis_data_hs = [[i + ':' + str(x[i]) for i in x] for x in hs_code]
+    wait_analysis_data_scale = [[i + ':' + str(x[i]) for i in x] for x in enterprise_scale]
+    result_rules_hs = doAssociation(wait_analysis_data_hs)
+    logger.info("》》》》》》分析得出hs编码规则 %s 条" % (len(result_rules_hs)))
+    result_rules_scale = doAssociation(wait_analysis_data_scale)
+    logger.info("》》》》》》分析得出企业规模规则 %s 条" % (len(result_rules_scale)))
+    doSaveRules(result_rules_hs, '', table_name_hs_code)
+    doSaveRules(result_rules_scale, '', table_name_enterprise_scale)
+
+
+def queryDataLeft(columns):
+    sql = """
+                SELECT LEFT(CKSP_DM, 8) AS CKSP_DM, TRUNCATE(ZMY / 100000000, 0) AS ZMY, %s
+                FROM %s c
+                WHERE NOT EXISTS(SELECT 1 FROM attribute_items_details a WHERE c.ID = a.DATA_ID)
+            """ % (','.join(columns), table['target'])
+    with DataBaseOperate() as db:
+        return db.query_all_with_column(sql)
+
+
 def doAssociation(wait_analysis_data):
     association = Association(wait_analysis_data, float(2000 / len(wait_analysis_data)), 0.8)
     rules = association.generateResult()
@@ -107,4 +135,4 @@ def doSaveRules(rules, item_id, table_name):
 
 if __name__ == '__main__':
     createRulesTable()
-    initTask()
+    handleDataLeft()
