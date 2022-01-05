@@ -1,0 +1,8 @@
+2021-12-30 19:46:58,540 - logging_operate.py[line:30] - INFO: 》》》本次关联分析生成0条规则
+2021-12-30 19:46:58,939 - logging_operate.py[line:30] - INFO: 》》》本次过滤和解码返回0条规则
+2021-12-30 19:47:35,942 - logging_operate.py[line:30] - INFO: 》》》本次关联分析生成50条规则
+2021-12-30 19:47:35,953 - logging_operate.py[line:30] - INFO: 》》》本次过滤和解码返回50条规则
+2021-12-30 19:48:48,090 - logging_operate.py[line:30] - INFO: 》》》本次关联分析生成0条规则
+2021-12-30 19:48:48,287 - logging_operate.py[line:30] - INFO: 》》》本次过滤和解码返回0条规则
+2021-12-30 19:49:01,642 - logging_operate.py[line:30] - INFO: 》》》本次关联分析生成50条规则
+2021-12-30 19:49:01,654 - logging_operate.py[line:30] - INFO: 》》》本次过滤和解码返回50条规则
