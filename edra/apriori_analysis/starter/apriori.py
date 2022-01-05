@@ -11,7 +11,6 @@ from edra.apriori_analysis.models.rule import Rule
 from utils.database_operate import DataBaseOperate
 from utils.logging_operate import LoggingOperate
 from utils.utils import listOfGroups
-import tensorflow as tf
 
 logger = LoggingOperate("apriori")
 
@@ -99,7 +98,7 @@ def handleDataLeft():
 
 def queryDataLeft(columns):
     sql = """
-                SELECT LEFT(CKSP_DM, 8) AS CKSP_DM, TRUNCATE(ZMY / 100000000, 0) AS ZMY, %s
+                SELECT LEFT(CKSP_DM, 2) AS CKSP_DM, TRUNCATE(ZMY / 100000000, 0) AS ZMY, %s
                 FROM %s c
                 WHERE NOT EXISTS(SELECT 1 FROM attribute_items_details a WHERE c.ID = a.DATA_ID)
             """ % (','.join(columns), table['target'])

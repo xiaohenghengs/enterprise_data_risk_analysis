@@ -1,34 +1,29 @@
-from utils.sqlite_operate import SqliteOperate
+from utils.database_operate import DataBaseOperate
 
 
 class RulesHandler:
-    def __init__(self):
-        self.sqlite = SqliteOperate()
-        self.rules = self.loadAllRules()
+    def __init__(self, item_id, normal):
+        self.rules = {}
+        self.item_id = item_id
+        self.rules_list_normal = normal
 
-    def loadAllRules(self):
-        batch = self.sqlite.query_all('SELECT batch FROM drop_columns GROUP BY batch')
-        rules = dict()
-        for bat in batch:
-            drop_columns_rules = self.makeDropColumnsRules(bat)
-            rule_conclusion = self.sqlite.query_all('SELECT id,rule,conclusion FROM rules WHERE batch = %s' % bat)
-            if len(rule_conclusion) > 0:
-                this_batch_rules = {str(x[0]): drop_columns_rules + str(x[1]).split('&') + (str(x[2]).split('&')) for x
-                                    in rule_conclusion}
-            else:
-                this_batch_rules = {'Batch_' + str(bat[0]): drop_columns_rules}
-            rules.update(this_batch_rules)
-        return rules
-
-    def makeDropColumnsRules(self, batch):
-        drop_columns = self.sqlite.query_all('SELECT _column,attribute FROM drop_columns WHERE batch = %s' % batch)
-        # make up drop columns into rules format
-        return [str(x[0]) + ':' + str(x[1]) for x in drop_columns]
+    def loadAllRulesNormal(self):
+        with DataBaseOperate() as db:
+            for normal in self.rules_list_normal:
+                self.rules[normal] = db.query_all_with_column(
+                    """SELECT 
+                        r.id, CONCAT(r.RULE, '&', r.CONCLUSION) AS rule
+                       FROM 
+                        %s r 
+                       JOIN attribute_items a ON r.ITEM_ID = a.ID WHERE ITEM_ID = '%s'
+                    """ % (normal, self.item_id)
+                )
 
     def matchHighest(self, data):
         rule_match_info = list()
-        for rule_id in self.rules:
-            rule = self.rules[rule_id]
+        for rule in self.rules:
+            rule_id = rule['id']
+            rule = rule['rule']
             match_attribute = [x for x in rule if x.strip() in data]
             score = len(match_attribute) / len(rule)
             __dict = {'rule_id': rule_id, 'score': score}

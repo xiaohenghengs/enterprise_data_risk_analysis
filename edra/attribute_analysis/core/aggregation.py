@@ -16,16 +16,16 @@ class Aggregation:
     def __init__(self, max_num, min_num):
         self.__max_num = max_num
         self.__min_num = min_num
-        self.__cksp_dm_length = 10
-        self.__zmy_unit = 10000
-        self.__unit_switch = False
-        self.__length_switch = True
+        self.__cksp_dm_length = [10, 8, 6, 4, 2]  # 出口商品代码退位参数
+        self.__zmy_unit = [10000, 100000, 1000000, 10000000, 100000000]  # 总美元退位参数
 
     def getItems(self):
         logger.info("》》》》》》开始全部数据属性分类")
         AttributeItem.createAttributeItems()
+        length_index = 0
+        unit_index = 0
         while True:
-            logger.info("》》》参数：length %s ；unit %s" % (self.__cksp_dm_length, self.__zmy_unit))
+            logger.info("》》》参数：length %s ；unit %s" % (self.__cksp_dm_length[length_index], self.__zmy_unit[unit_index]))
             if self.__cksp_dm_length == 0:
                 logger.info("》》》Done！")
                 break
@@ -57,16 +57,14 @@ class Aggregation:
                     attributeItem.addList(attributeItem.toList())
                 attributeItem.save()
             else:
+                if length_index == 4 and unit_index == 4:
+                    break
                 logger.info("》》》没有符合阈值的分类数据，开始 KEY 属性退位")
-                if self.__unit_switch:
-                    self.__zmy_unit = self.__zmy_unit * 10
-                    self.__unit_switch = False
-                    self.__length_switch = True
-                elif self.__length_switch:
-                    self.__cksp_dm_length = self.__cksp_dm_length - 2
-                    self.__length_switch = False
-                    self.__unit_switch = True
-                logger.info("》》》退位后参数：length=%s；unit=%s" % (self.__cksp_dm_length, self.__zmy_unit))
+                if length_index < 4:
+                    length_index += 1
+                else:
+                    length_index = 1
+                    unit_index += 1
 
     def attributeItems(self):
         sql = """
