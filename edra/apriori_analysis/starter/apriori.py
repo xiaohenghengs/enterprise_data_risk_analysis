@@ -18,8 +18,8 @@ RULES_HS_CODE = ['CKSL_DECILE', 'MYLAJ_DECILE', 'FOBDJ_DECILE', 'MZ_2_DECILE', '
 
 RULES_ENTERPRISE_SCALE = ['ZZMDGDQSZ_DM', 'YSFS_DM', 'ZYG_DM', 'HGCJFS_DM', 'QYGBZ', 'HZDWDQ_DM', 'HGGQKA_DM']
 
-table_name_hs_code = 'rules_hs_code_left'
-table_name_enterprise_scale = 'rules_enterprise_scale_left'
+table_name_hs_code = 'rules_hs_code'
+table_name_enterprise_scale = 'rules_enterprise_scale'
 
 
 def createRulesTable():
@@ -107,7 +107,7 @@ def queryDataLeft(columns):
 
 
 def doAssociation(wait_analysis_data):
-    association = Association(wait_analysis_data, float(2000 / len(wait_analysis_data)), 0.8)
+    association = Association(wait_analysis_data, float(3000 / len(wait_analysis_data)), 0.8)
     rules = association.generateResult()
     pool = ThreadPool()
     pool.map(partial(association.filteringAndDecodingResult, rule_len=1, target_len=100), rules)
@@ -134,4 +134,4 @@ def doSaveRules(rules, item_id, table_name):
 
 if __name__ == '__main__':
     createRulesTable()
-    handleDataLeft()
+    initTask()
