@@ -18,17 +18,16 @@ class Aggregation:
         self.__min_num = min_num
         self.__cksp_dm_length = [10, 8, 6, 4, 2]  # 出口商品代码退位参数
         self.__zmy_unit = [10000, 100000, 1000000, 10000000, 100000000]  # 总美元退位参数
+        self.length_index = 0
+        self.unit_index = 0
 
     def getItems(self):
         logger.info("》》》》》》开始全部数据属性分类")
         AttributeItem.createAttributeItems()
-        length_index = 0
-        unit_index = 0
+
         while True:
-            logger.info("》》》参数：length %s ；unit %s" % (self.__cksp_dm_length[length_index], self.__zmy_unit[unit_index]))
-            if self.__cksp_dm_length == 0:
-                logger.info("》》》Done！")
-                break
+            logger.info("》》》参数：length %s ；unit %s" % (
+                self.__cksp_dm_length[self.length_index], self.__zmy_unit[self.unit_index]))
             items = self.attributeItems()
             if items:
                 logger.info("》》》查询到 %s 个分类" % len(items))
@@ -41,8 +40,8 @@ class Aggregation:
                     attributeItem.cksp_dm = cksp_dm
                     attributeItem.zmy = zmy
                     attributeItem.count = count
-                    attributeItem.cksp_dm_length = self.__cksp_dm_length
-                    attributeItem.zmy_unit = self.__zmy_unit
+                    attributeItem.cksp_dm_length = self.__cksp_dm_length[self.length_index]
+                    attributeItem.zmy_unit = self.__zmy_unit[self.unit_index]
                     data_ids = self.getAttributeItems(['ID'], cksp_dm, zmy)
                     if count <= self.__max_num:
                         attributeItem.data_ids = data_ids
@@ -51,20 +50,23 @@ class Aggregation:
                         # attribute analysis
                         from edra.attribute_analysis.core.attribute import Attribute
                         attributeItem.data_ids = Attribute(
-                            {'max_num': self.__max_num, 'min_num': self.__min_num, 'length': self.__cksp_dm_length,
-                             'unit': self.__zmy_unit}, ['ID', 'HGQY_DM']).attributesFilter(cksp_dm, zmy)
+                            {'max_num': self.__max_num, 'min_num': self.__min_num,
+                             'length': self.__cksp_dm_length[self.length_index],
+                             'unit': self.__zmy_unit[self.unit_index]},
+                            ['ID', 'HGQY_DM']).attributesFilter(cksp_dm, zmy)
                         logger.info("》》》属性筛选剩 %s 个数据" % (len(attributeItem.data_ids)))
                     attributeItem.addList(attributeItem.toList())
                 attributeItem.save()
             else:
-                if length_index == 4 and unit_index == 4:
+                if self.length_index == 4 and self.unit_index == 4:
+                    logger.info("》》》Done！")
                     break
                 logger.info("》》》没有符合阈值的分类数据，开始 KEY 属性退位")
-                if length_index < 4:
-                    length_index += 1
+                if self.length_index < 4:
+                    self.length_index += 1
                 else:
-                    length_index = 1
-                    unit_index += 1
+                    self.length_index = 1
+                    self.unit_index += 1
 
     def attributeItems(self):
         sql = """
@@ -81,7 +83,8 @@ class Aggregation:
                      group by t.CKSP_DM, t.ZMY
                  ) tt
             where tt.count >= %s
-            """ % (self.__cksp_dm_length, self.__zmy_unit, table['target'], self.__min_num)
+            """ % (self.__cksp_dm_length[self.length_index],
+                   self.__zmy_unit[self.unit_index], table['target'], self.__min_num)
         with DataBaseOperate() as db:
             return db.query_all(sql)
 
@@ -92,8 +95,9 @@ class Aggregation:
                      where LEFT(c.CKSP_DM, %s) = '%s'
                      and TRUNCATE(c.ZMY / %s, 0) = %s
                      and not exists (select 1 from attribute_items_details a where a.DATA_ID = c.ID)
-                """ % (','.join(columns), table['target'], length if length else self.__cksp_dm_length, cksp_dm,
-                       unit if unit else self.__zmy_unit, zmy)
+                """ % (','.join(columns), table['target'],
+                       length if length else self.__cksp_dm_length[self.length_index], cksp_dm,
+                       unit if unit else self.__zmy_unit[self.unit_index], zmy)
             if conditions:
                 sql += conditions
             return db.query_all(sql)
