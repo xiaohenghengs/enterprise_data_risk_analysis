@@ -1,18 +1,20 @@
 import sys
 
 sys.path.append(r'../../../../enterprise_data_risk_analysis')
-from collections import Counter
-from threading import Thread
-
+import threading
 import pandas as pd
 
+from collections import Counter
+from threading import Thread
 from conf import table
 from edra.apriori_analysis.starter.apriori import RULES_HS_CODE, RULES_ENTERPRISE_SCALE
 from edra.rules_analysis.starter.rules import queryAllAttributeItems
 from edra.rules_analysis.starter.rules import rule_types
 from utils.database_operate import DataBaseOperate
 from utils.utils import listOfGroups
+from utils.logging_operate import LoggingOperate
 
+logger = LoggingOperate('enterprise')
 data_column = RULES_HS_CODE + RULES_ENTERPRISE_SCALE
 
 
@@ -36,8 +38,10 @@ def loadRulesByDataIds(data_ids, rule_type):
 
 
 def doAnalysis(customs):
+    thread_name = threading.current_thread().name
     global enterprises
-    for customs_code in customs:
+    for index, customs_code in enumerate(customs):
+        logger.info('》》》线程：%s，正在分析第 %d 家企业' % (thread_name, index))
         enterprise_info = list()
         data_ids = loadDataIdByCustomsCode(customs_code)
         data_length = len(data_ids)
