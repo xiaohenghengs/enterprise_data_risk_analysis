@@ -1,4 +1,5 @@
 import os
+
 import jaydebeapi
 
 from conf import oceanbase, root_path
@@ -46,6 +47,10 @@ class DataBaseOperate:
         self.execute_sql(sql)
         return self.cursor.fetchall()
 
+    def query_one(self, sql):
+        self.execute_sql(sql)
+        return self.cursor.fetchone()
+
     def query_all_with_column(self, sql):
         data = self.query_all(sql)
         index_dict = self.get_index_dict()
@@ -55,6 +60,14 @@ class DataBaseOperate:
             for index_i in index_dict:
                 res_i[index_i] = d[index_dict[index_i]]
             res.append(res_i)
+        return res
+
+    def query_one_with_column(self, sql):
+        data = self.query_one(sql)
+        index_dict = self.get_index_dict()
+        res = dict()
+        for index_i in index_dict:
+            res[index_i] = data[index_dict[index_i]]
         return res
 
     def executemany_sql(self, sql, data_list):

@@ -1,3 +1,6 @@
+import sys
+
+sys.path.append(r'../../../../enterprise_data_risk_analysis')
 import threading
 from threading import Thread
 
@@ -68,10 +71,14 @@ def doDataMatch(data_ids, rules_obj, item_info):
     logger.info('》》》线程：%s，数据保存成功！' % thread_name)
 
 
+def queryAllAttributeItems():
+    with DataBaseOperate() as db:
+        return db.query_all_with_column('select ID,CKSP_DM_LENGTH,ZMY_UNIT from attribute_items')
+
+
 if __name__ == '__main__':
     DataRules.createTable()
-    with DataBaseOperate() as db:
-        attribute_items = db.query_all_with_column('select ID,CKSP_DM_LENGTH,ZMY_UNIT from attribute_items')
+    attribute_items = queryAllAttributeItems()
     logger.info('》》》》》》》》》查询到 %d 个分类，开始分线程处理，每个线程处理10个分类' % len(attribute_items))
     items_groups = listOfGroups(attribute_items, 10)
     threads = []
