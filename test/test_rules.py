@@ -54,7 +54,7 @@ class RuleHandlerTest(unittest.TestCase):
         enterprise.enterprises = list()
         enterprise.attribute_items = {x['ID']: {'CKSP_DM_LENGTH': x['CKSP_DM_LENGTH'], 'ZMY_UNIT': x['ZMY_UNIT']} for x
                                       in queryAllAttributeItems()}
-        enterprise.doAnalysis(['3202340159'])
+        enterprise.doAnalysis(['3202962684'])
         self.assertIsNotNone(enterprise.enterprises)
 
 

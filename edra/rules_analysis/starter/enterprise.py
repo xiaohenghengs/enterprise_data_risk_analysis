@@ -95,6 +95,8 @@ def handleAbnormalRule(frame, rule_type):
         data_attribute = [str(column) + ':' + str(info[column]) for column in info]
         r = rule_info.split('&')
         no_match_attribute.extend([x for x in r if x.strip() not in data_attribute])
+        logger.info('rule_type: %s ,data_id: %s ,rule_id: %s , no_match_attribute: %s' % (
+            rule_type, data_id, rule_id, no_match_attribute))
     no_match_attribute = [x.split(':')[0] for x in no_match_attribute]
     return Counter(no_match_attribute)
 
@@ -114,6 +116,6 @@ if __name__ == '__main__':
     for thread in threads:
         thread.join()
     data_frame = pd.DataFrame(enterprises, columns=(
-        '海关企业代码', '明细条数', '商品编码：SCORE=1', '商品编码：1>SCORE>=0.7', '商品编码：SCORE<0.7', '商品编码：异常属性概率', '企业规模：SCORE=1',
-        '企业规模：1>SCORE>=0.7', '企业规模：SCORE<0.7', '企业规模：异常属性概率'))
+        '海关企业代码', '明细条数', '企业规模：SCORE=1', '企业规模：1>SCORE>=0.7', '企业规模：SCORE<0.7', '企业规模：异常属性概率', '商品编码：SCORE=1',
+        '商品编码：1>SCORE>=0.7', '商品编码：SCORE<0.7', '商品编码：异常属性概率'))
     data_frame.to_excel('分析结果.xlsx', index=False)
