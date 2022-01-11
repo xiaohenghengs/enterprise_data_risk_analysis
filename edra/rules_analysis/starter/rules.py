@@ -5,7 +5,8 @@ import threading
 from threading import Thread
 
 from conf import table
-from edra.apriori_analysis.starter.apriori import RULES_HS_CODE, RULES_ENTERPRISE_SCALE
+from edra.apriori_analysis.starter.apriori import RULES_HS_CODE, RULES_ENTERPRISE_SCALE, table_name_enterprise_scale, \
+    table_name_hs_code
 from edra.rules_analysis.core.rules import RulesHandler
 from edra.rules_analysis.models.data_rules import DataRules
 from utils.database_operate import DataBaseOperate
@@ -14,7 +15,7 @@ from utils.utils import listOfGroups
 
 logger = LoggingOperate('data_rule')
 
-rule_types = ['rules_enterprise_scale', 'rules_hs_code']
+rule_types = [table_name_enterprise_scale, table_name_hs_code]
 
 data_column = RULES_HS_CODE + RULES_ENTERPRISE_SCALE
 
