@@ -39,10 +39,7 @@ class Quantile:
         十分位值
         :return: 数列的0%分位，10%分位，20%分位...90%分位，100%分位
         """
-        result = []
-        for i in range(11):
-            result.append(self.percentile(i * 10))
-        return result
+        return [self.percentile(i * 10) for i in range(11)]
 
     def decileInterval(self):
         """
