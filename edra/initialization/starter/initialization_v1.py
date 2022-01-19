@@ -14,7 +14,9 @@ logger = LoggingOperate('initialization_v1')
 
 
 def initCustomsDeclarationTarget():
-    global init_quantile_cksl, init_quantile_mylaj_sb, init_quantile_ckjhje, init_quantile_jsje, init_quantile_zsse, init_quantile_ytse, init_quantile_mylaj, init_quantile_sl1, init_quantile_sl2, init_quantile_sbsl, init_quantile_mz_2, init_quantile_jz, init_quantile_fobdj
+    global init_quantile_cksl, init_quantile_mylaj_sb, init_quantile_ckjhje, init_quantile_jsje, init_quantile_zsse, \
+        init_quantile_ytse, init_quantile_mylaj, init_quantile_sl1, init_quantile_sl2, init_quantile_sbsl, \
+        init_quantile_mz_2, init_quantile_jz, init_quantile_fobdj, total_trade_price
     # create target table if not exist
     CustomsDeclarationTarget.createTable()
     with DataBaseOperate() as db:
@@ -55,6 +57,16 @@ def initCustomsDeclarationTarget():
         # query data group by enterprise
         customs_enterprise_codes = db.query_all('SELECT HGQYDM FROM customs_declaration_v1 GROUP BY HGQYDM')
         logger.info('》》》》》》》》》查询获取全部 %d 家企业' % len(customs_enterprise_codes))
+        # query total trade price by enterprise
+        total_trade_price = db.query_all(
+            """
+            SELECT HGQYDM, DATE_FORMAT(CKRQ_1, '%Y') AS YEAR, ROUND(SUM(MYLAJ), 4) AS ZMY
+            FROM customs_declaration_v1
+            WHERE CKRQ_1 IS NOT NULL
+            GROUP BY HGQYDM, DATE_FORMAT(CKRQ_1, '%Y')
+            """)
+        total_trade_price = numpy.array(total_trade_price)
+        logger.info('》》》》》》》》》初始化全部企业年出口额成功！')
         customs_group = listOfGroups(customs_enterprise_codes, 75)
         threads = []
         for customs in customs_group:
@@ -68,7 +80,9 @@ def initCustomsDeclarationTarget():
 def threadInitTarget(customs_enterprise_codes):
     thread_name = threading.current_thread().name
     logger.info('》》》》》》%s start!' % thread_name)
-    global init_quantile_cksl, init_quantile_mylaj_sb, init_quantile_ckjhje, init_quantile_jsje, init_quantile_zsse, init_quantile_ytse, init_quantile_mylaj, init_quantile_sl1, init_quantile_sl2, init_quantile_sbsl, init_quantile_mz_2, init_quantile_jz, init_quantile_fobdj
+    global init_quantile_cksl, init_quantile_mylaj_sb, init_quantile_ckjhje, init_quantile_jsje, init_quantile_zsse, \
+        init_quantile_ytse, init_quantile_mylaj, init_quantile_sl1, init_quantile_sl2, init_quantile_sbsl, \
+        init_quantile_mz_2, init_quantile_jz, init_quantile_fobdj, total_trade_price
     for index, code in enumerate(customs_enterprise_codes):
         code = code[0]
         logger.info('》》》thread：%s ，第 %d 家企业，海关企业代码：%s' % (thread_name, index, code))
@@ -82,22 +96,14 @@ def threadInitTarget(customs_enterprise_codes):
                             ZYG_DM, HGCJFS_DM, JHFS_DM, HZDWDQ_DM, HGGQKA_DM, SBDW_DM, SBDWMC,
                             TIMESTAMPDIFF(MONTH, DATE_FORMAT(CKRQ_1, '%Y-%m-%d'), CONCAT(LEFT(SBNY, 4), '-', RIGHT(SBNY, 2), '-01')) AS DIFF,
                             round(MYLAJ / SL1, 4) as FOBDJ, DATE_FORMAT(CKRQ_1, '%Y') AS CKN
-                    FROM customs_declaration_v1 
+                    FROM customs_declaration_v1
                     WHERE HGQYDM = '""" + code + "'")
             logger.info('》》》thread：%s ，查询到该企业含有 %d 条报关单明细，开始明细分析' % (thread_name, len(details)))
-            zmy = db.query_all("""
-                                  SELECT DATE_FORMAT(CKRQ_1, '%Y') AS YEAR, 
-                                         ROUND(SUM(MYLAJ), 4) AS ZMY
-                                  FROM customs_declaration_v1
-                                  WHERE HGQYDM = '""" + code + """'
-                                    AND CKRQ_1 IS NOT NULL
-                                  GROUP BY DATE_FORMAT(CKRQ_1, '%Y')
-                                """)
             details_frame = numpy.array(details)
-            zmy_frame = numpy.array(zmy)
         customs = CustomsDeclarationTarget()
         for detail in details_frame:
             customs.hgqydm = detail[0]
+            zmy_frame = total_trade_price[total_trade_price[:, 0] == detail[0]][:, 1:3]
             customs.sbny = detail[1]
             customs.pc = detail[2]
             customs.tsjgdm = detail[3]
@@ -153,6 +159,8 @@ def threadInitTarget(customs_enterprise_codes):
         logger.info('》》》thread：%s ，目标明细数据保存成功！' % thread_name)
 
 
-global init_quantile_cksl, init_quantile_mylaj_sb, init_quantile_ckjhje, init_quantile_jsje, init_quantile_zsse, init_quantile_ytse, init_quantile_mylaj, init_quantile_sl1, init_quantile_sl2, init_quantile_sbsl, init_quantile_mz_2, init_quantile_jz, init_quantile_fobdj
+global init_quantile_cksl, init_quantile_mylaj_sb, init_quantile_ckjhje, init_quantile_jsje, init_quantile_zsse, \
+    init_quantile_ytse, init_quantile_mylaj, init_quantile_sl1, init_quantile_sl2, init_quantile_sbsl, \
+    init_quantile_mz_2, init_quantile_jz, init_quantile_fobdj, total_trade_price
 if __name__ == '__main__':
     initCustomsDeclarationTarget()
