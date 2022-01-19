@@ -34,7 +34,7 @@ def initCustomsDeclarationTarget():
                        round(MZ_2, 4)        as MZ_2,
                        round(JZ, 4)          as JZ,
                        round(MYLAJ / SL1, 4) as FOBDJ
-                FROM customs_declaration_v1 limit 500
+                FROM customs_declaration_v1
             """)
     data_frame = numpy.array(quantile_columns_data)
     init_quantile_cksl = DynamicRangeQuantile(list(data_frame[:, 0]), 10, 4, None, 2)
