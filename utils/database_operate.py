@@ -51,7 +51,7 @@ class DataBaseOperate:
         self.execute_sql(sql)
         return self.cursor.fetchone()
 
-    def query_all_with_column(self, sql):
+    def query_all_with_column(self, sql: object) -> object:
         data = self.query_all(sql)
         index_dict = self.get_index_dict()
         res = []

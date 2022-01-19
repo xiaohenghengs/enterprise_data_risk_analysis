@@ -3,8 +3,8 @@ target_table_name: target_data
 other_table_name: other_data
 database:
   table:
-    basic: customs_declaration
-    target: customs_declaration_target
+    basic: customs_declaration_v1
+    target: customs_declaration_v1_target
   oceanbase:
     driver: com.alipay.oceanbase.jdbc.Driver
     url: jdbc:oceanbase://192.168.100.30:2881/edra?rewriteBatchedStateme&useUnicode=true&characterEncoding=utf-8&autoReconnect=true

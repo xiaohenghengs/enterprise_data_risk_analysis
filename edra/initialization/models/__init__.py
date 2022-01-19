@@ -1,9 +1,6 @@
-from conf import table
-
-
 def sqlCreateTableCustomsDeclaration():
     return """
-    CREATE TABLE IF NOT EXISTS %s
+    CREATE TABLE IF NOT EXISTS customs_declaration_target
         (
             ID           BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             HGQY_DM      varchar(64),
@@ -27,4 +24,64 @@ def sqlCreateTableCustomsDeclaration():
             HZDWDQ_DM    varchar(64),
             HGGQKA_DM    varchar(64)
         )
-    """ % table['target']
+    """
+
+
+def sqlCreateTableCustomsDeclarationV1():
+    return """
+    CREATE TABLE IF NOT EXISTS customs_declaration_v1_target
+        (
+            ID              BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            HGQYDM          VARCHAR(64),
+            SBNY            VARCHAR(64),
+            PC              VARCHAR(64),
+            TSJGDM          VARCHAR(64),
+            GLH             VARCHAR(64),
+            CKFPH           VARCHAR(64),
+            BGDH            VARCHAR(64),
+            SPDM            VARCHAR(64),
+            SPMC            VARCHAR(64),
+            JLDW            VARCHAR(64),
+            CKSL_DECILE     VARCHAR(64),
+            MYLAJ_SB_DECILE VARCHAR(64),
+            CKJHJE_DECILE   VARCHAR(64),
+            DRRQ            VARCHAR(64),
+            NSRSBH          VARCHAR(64),
+            DAH             VARCHAR(64),
+            JLDWDM          VARCHAR(64),
+            ZGLH            VARCHAR(64),
+            SZ              VARCHAR(64),
+            JHPZH           VARCHAR(64),
+            GFNSRSBH        VARCHAR(64),
+            KPRQ            VARCHAR(64),
+            JSJE_DECILE     VARCHAR(64),
+            ZSSL            VARCHAR(64),
+            ZSSE_DECILE     VARCHAR(64),
+            TSL             VARCHAR(64),
+            YTSE_DECILE     VARCHAR(64),
+            HYD_SJ          VARCHAR(64),
+            HYD_DSJ         VARCHAR(64),
+            HYD_QXJ         VARCHAR(64),
+            CKRQ_1          VARCHAR(64),
+            MYLAJ           VARCHAR(64),
+            MYLAJ_DECILE    VARCHAR(64),
+            RMB             VARCHAR(64),
+            SL1_DECILE      VARCHAR(64),
+            SL2_DECILE      VARCHAR(64),
+            SBSL_DECILE     VARCHAR(64),
+            MZ_2_DECILE     VARCHAR(64),
+            JZ_DECILE       VARCHAR(64),
+            ZZMDGDQSZ_DM    VARCHAR(64),
+            YSFS_DM         VARCHAR(64),
+            ZYG_DM          VARCHAR(64),
+            HGCJFS_DM       VARCHAR(64),
+            JHFS_DM         VARCHAR(64),
+            HZDWDQ_DM       VARCHAR(64),
+            HGGQKA_DM       VARCHAR(64),
+            SBDW_DM         VARCHAR(64),
+            SBDWMC          VARCHAR(64),
+            CK_SB_DIFF      VARCHAR(64),
+            ZMY             VARCHAR(64),
+            FOBDJ_DECILE    VARCHAR(64)
+        )
+    """

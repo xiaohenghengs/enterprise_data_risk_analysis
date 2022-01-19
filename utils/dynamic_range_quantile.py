@@ -73,3 +73,8 @@ class DynamicRangeQuantile:
             else:
                 begin += step
         return steps
+
+    def intervalNum(self, value):
+        for index, interval in enumerate(self.quantile):
+            if value in interval:
+                return index
