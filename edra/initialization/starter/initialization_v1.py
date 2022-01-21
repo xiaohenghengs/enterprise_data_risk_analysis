@@ -72,7 +72,7 @@ def initCustomsDeclarationTarget():
             """)
         total_trade_price = numpy.array(total_trade_price)
         logger.info('》》》》》》》》》初始化全部企业年出口额成功！')
-        customs_group = listOfGroups(customs_enterprise_codes, 250)
+        customs_group = listOfGroups(customs_enterprise_codes, 150)
         threads = []
         for customs in customs_group:
             threads.append(Thread(target=threadInitTarget, args=(customs,)))
@@ -91,8 +91,7 @@ def threadInitTarget(codes_year):
         logger.info('》》》thread：%s ，第 %d 家企业，海关企业代码：%s' % (thread_name, index, code_year))
         with DataBaseOperate() as db:
             # query data by customs code
-            details = db.query_all(
-                """
+            sql = """
                     SELECT  HGQYDM, SBNY, PC, TSJGDM, GLH, CKFPH, BGDH, SPDM, SPMC, JLDW, CKSL, MYLAJ_SB, CKJHJE, DRRQ, 
                             NSRSBH, DAH, JLDWDM, ZGLH, SZ, JHPZH, GFNSRSBH, KPRQ, JSJE, ZSSL, ZSSE, TSL, YTSE, HYD_SJ,
                             HYD_DSJ, HYD_QXJ, CKRQ_1, MYLAJ, RMB, SL1, SL2, SBSL, MZ_2, JZ, ZZMDGDQSZ_DM, YSFS_DM,
@@ -100,9 +99,14 @@ def threadInitTarget(codes_year):
                             TIMESTAMPDIFF(MONTH, DATE_FORMAT(CKRQ_1, '%Y-%m-%d'), CONCAT(LEFT(SBNY, 4), '-', RIGHT(SBNY, 2), '-01')) AS DIFF,
                             round(MYLAJ / SL1, 4) as FOBDJ, DATE_FORMAT(CKRQ_1, '%Y') AS CKN
                     FROM customs_declaration_v1
-                    WHERE HGQYDM = '""" + code + """' AND DATE_FORMAT(CKRQ_1, '%Y') = '""" + year + """'""")
+                    WHERE HGQYDM = '""" + code + """'"""
+            if year:
+                sql += " AND DATE_FORMAT(CKRQ_1, '%Y') = '" + year + "'"
+            else:
+                sql += ' AND CKRQ_1 IS NULL'
+            details = db.query_all(sql)
         logger.info('》》》thread：%s ，查询到该企业含有 %d 条报关单明细，开始明细分析' % (thread_name, len(details)))
-        details_group = listOfGroups(details, 2000)
+        details_group = listOfGroups(details, 1000)
         threads = []
         for details in details_group:
             threads.append(Thread(target=saveTarget, args=(details,)))
